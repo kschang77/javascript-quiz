@@ -14,11 +14,11 @@
 //  goto do showScores again /done
 
 //  upon "start quiz" button press /done
-//  loop until timer <=0 or end of questions
-//    init timer and start timer countdown
-//    display question
-//    if wrong answer 
-//        timer dec penalty
+//  loop until timer <=0 or end of questions   /done
+//    init timer and start timer countdown /done
+//    display question /done
+//    if wrong answer  /done
+//        timer dec penalty /done
 //    end 
 //        
 //  next question
@@ -30,16 +30,20 @@
 //  do showScore (see !!)
 
 // utility function, implements sleep
-// const sleep = (milliseconds) => {
-//     return new Promise(resolve => setTimeout(resolve, milliseconds))
-// }
+function sleep(milliseconds) {
+    const date = Date.now();
+    let currentDate = null;
+    do {
+        currentDate = Date.now();
+    } while (currentDate - date < milliseconds);
+}
 
 
 var myTimer; // global timer variable
 
 arrTrivia = [
     { question:"In the episode 'The Man Trap' what did the creature crave?",
-      choices: ["Blood", "Dilithium", "Salt", "Sugar"],
+      choices: ["Blood", "Dilithium", "Salt", "Man"],
       answer: "Salt"
     },
     { question: "What is Spock's mother's first name?",
@@ -67,7 +71,11 @@ var mainEl = document.getElementById("main");
 var highScoreEl = document.querySelector(".txtViewHighScore")
 
     // initialize the display with seconds remaining
-var secondsLeft = 5;
+var secondsLeft = 100;
+var secondsPenalty = 5;
+var curTriviaQuestion = 0;
+var globalPadding = "padding: 15px"
+var globalMargin = "margin: 25px 20%"
 
 // debug highscore table
 // var arrHighScores = [{ name: "KSC",
@@ -103,17 +111,17 @@ function retrieveHighScores() {
     // console.log(rawData);
     if (rawData != null) {
         var highScoresStored = JSON.parse(rawData);
-        console.log(highScoresStored)
+        // console.log(highScoresStored)
         arrHighScores = [];
         for (var i = 0, len = highScoresStored.length; i< len ; i++) {
             var highScoreSingle = new Object();
             highScoreSingle.name = highScoresStored[i].name;
             highScoreSingle.seconds = highScoresStored[i].seconds;
             arrHighScores.push(highScoreSingle);
-            console.log(highScoreSingle)
+//            console.log(highScoreSingle)
         } 
     }
-    console.log(arrHighScores)
+    // console.log(arrHighScores)
 }
 
 // display arrHighScores onto Main
@@ -122,7 +130,7 @@ function showHighScoreValues () {
     clearMain();
     mainEl.innerHTML = "<h3>High score table</h3>"
     retrieveHighScores();
-    console.log(arrHighScores);
+    // console.log(arrHighScores);
     
     for (var i = 0; i< arrHighScores.length ; i++) {
         var txtStart = document.createElement("p");
@@ -133,13 +141,13 @@ function showHighScoreValues () {
     // button codes go here
     var btn = document.createElement("BUTTON");   // Create a <button> element
     btn.innerHTML = "Back to Main";
-    btn.setAttribute('style', "padding:15px")          // Insert text
+    btn.setAttribute('style', globalPadding)          // Insert text
     btn.setAttribute('onclick', "initAndGreet()")
     mainEl.appendChild(btn);
 
     var btn = document.createElement("BUTTON");   // Create a <button> element
     btn.innerHTML = "Reset High Scores";
-    btn.setAttribute('style', "padding:15px")          // Insert text
+    btn.setAttribute('style', globalPadding)          // Insert text
     btn.setAttribute('onclick', "clearHighScoreValues()")
     mainEl.appendChild(btn);
 
@@ -189,15 +197,15 @@ function showformAddHighScore(score) {
  
     var txtScore = document.createElement("p");
     txtScore.innerHTML = "Your score is "+score;
-    txtScore.setAttribute('style', "padding:15px")
-    txtScore.setAttribute('style', "margin:20%")
+    txtScore.setAttribute('style', globalPadding)
+    txtScore.setAttribute('style', globalMargin)
     mainEl.appendChild(txtScore);
 
     var txtStart = document.createElement("p");
     txtStart.innerHTML = "Great job! Enter your initials (max of 3 characters) to save your score ";
     txtStart.innerHTML += "or leave blank to continue without saving."
-    txtStart.setAttribute('style', "padding:15px")
-    txtStart.setAttribute('style', "margin:20%")
+    txtStart.setAttribute('style', globalPadding)
+    txtStart.setAttribute('style', globalMargin)
     mainEl.appendChild(txtStart);
 
  //   Initials: 
@@ -208,6 +216,66 @@ function showformAddHighScore(score) {
 
 }
 
+function displayQuestion () {
+    clearMain();
+    var curTrivia = arrTrivia[curTriviaQuestion];
+    // display current trivia and answers
+    //{ question:"In the episode 'The Man Trap' what did the creature crave?",
+    //   choices: ["Blood", "Dilithium", "Salt", "Man"],
+    //     answer: "Salt"}
+    var txtQuestion = document.createElement("h3")
+
+    txtQuestion.innerHTML = curTrivia.question;
+    txtQuestion.setAttribute('style', globalPadding)
+    txtQuestion.setAttribute('style', globalMargin)
+    mainEl.appendChild(txtQuestion);
+
+
+    var txtDiv = document.createElement("div")
+    for (var j = 0; j < curTrivia.choices.length; j++) {
+        var btn = document.createElement("BUTTON");   // Create a <button> element
+        btn.innerHTML = curTrivia.choices[j];
+        btn.setAttribute('style', "padding: 5px")          // Insert text
+        btn.setAttribute('onclick', "checkAnswer('"+curTrivia.choices[j]+"')")
+        txtDiv.appendChild(btn);
+        var br = document.createElement("br")
+        txtDiv.appendChild(br)
+    }
+
+    mainEl.appendChild(txtDiv);
+}
+
+function checkAnswer (myAnswer) {
+    var correctAnswer = arrTrivia[curTriviaQuestion].answer;
+    var txtResult = document.createElement("h3")
+
+    txtResult.setAttribute('style', globalPadding)
+    txtResult.setAttribute('style', globalMargin)
+    if (myAnswer!=correctAnswer) {
+        // flash error message
+        txtResult.innerHTML = "Wrong!";
+
+        // extract penalty
+        secondsLeft = secondsLeft - secondsPenalty;
+    } else {
+        txtResult.innerHTML = "Correct!";
+
+    }
+    console.log(txtResult)
+    // clearMain();
+    mainEl.appendChild(txtResult);
+    // alert ("pause")
+    // sleep 1 second
+    sleep(1000);
+    console.log("curTriviaQuestion = "+curTriviaQuestion)
+    if (curTriviaQuestion<arrTrivia.length-1) {
+        curTriviaQuestion++;
+        displayQuestion();
+    } else {
+        endQuiz();
+    }
+
+}
 
 // now the rest of the code... 
 
@@ -227,27 +295,14 @@ function doMainQuizLoop () {
         }
     }, 1000);
 
+    // placeholder to test getting answer correct
+    // var btn = document.createElement("BUTTON");   // Create a <button> element
+    // btn.innerHTML = "Win Now";
+    // btn.setAttribute('style', globalPadding)          // Insert text
+    // btn.setAttribute('onclick', "endQuiz()")
+    // mainEl.appendChild(btn);
 
-    var btn = document.createElement("BUTTON");   // Create a <button> element
-    btn.innerHTML = "Win Now";
-    btn.setAttribute('style', "padding:15px")          // Insert text
-    btn.setAttribute('onclick', "endQuiz()")
-    mainEl.appendChild(btn);
-
-    var i = 0;
-    //while (i<=arrTrivia.length) { 
-    //     var curTrivia = arrTrivia[i];
-    //     // display current trivia and answers
-    
-    //     // wait for click
-
-
-    //     // update score
-        
-    //     // next question
-    //     i++;
-    //} 
-
+    displayQuestion();
     // we're done, stop the timer!
     //    endQuiz();
     // stop timer
@@ -260,6 +315,10 @@ function doMainQuizLoop () {
 function startQuiz() {
     // remove everything inside mainEl
     clearMain();
+
+    // reset pointers and time to proper values
+    curTriviaQuestion = 0;
+    secondsLeft = 100;
 
     // display the "View Highscores link"
     highScoreEl.textContent = "View Highscores" + highScoreEl.textContent;
@@ -280,7 +339,7 @@ function endQuiz() {
     highScoreEl.textContent = "";
     // erase Main
     mainEl.innerHTML = "";
-
+    // reset question pointer to 0
     showformAddHighScore(secondsLeft);
 }
 
@@ -290,27 +349,27 @@ function initAndGreet() {
     // display the initial screen and wait for user to
     // to push the start quiz button
     var txtTitle = document.createElement("h1");
-        txtTitle.innerHTML = "Trekker Knows Challenge";
+        txtTitle.innerHTML = "'Trekker Knows' Challenge";
         mainEl.appendChild(txtTitle);
 
     var txtStart = document.createElement("p");
-        txtStart.innerHTML = "Answer some questions about Star Trek (the Original Series) ";
-        txtStart.innerHTML += "as fast as you can. You have 100 seconds, but every WRONG answer ";
-        txtStart.innerHTML += "will cost you 5 seconds. Your score is the number of seconds ";
+        txtStart.innerHTML = "Answer "+arrTrivia.length+" questions about Star Trek (the Original Series) ";
+        txtStart.innerHTML += "as fast as you can. You have "+secondsLeft+" seconds, but every WRONG answer ";
+        txtStart.innerHTML += "will cost you "+secondsPenalty+" seconds. Your score is the number of seconds ";
         txtStart.innerHTML += "remaining when you answered all questions.\n";
-        txtStart.setAttribute('style',"padding:15px")
-        txtStart.setAttribute('style',"margin:20%")
+        txtStart.setAttribute('style',globalPadding)
+        txtStart.setAttribute('style',globalMargin)
         mainEl.appendChild(txtStart);
 
     var btn = document.createElement("BUTTON");   // Create a <button> element
         btn.innerHTML = "Start Quiz";   
-        btn.setAttribute('style',"padding:15px")          // Insert text
+        btn.setAttribute('style',globalPadding)          // Insert text
         btn.setAttribute('onclick',"startQuiz()")
         mainEl.appendChild(btn);  
 
     var btn = document.createElement("BUTTON");   // Create a <button> element
         btn.innerHTML = "Show High Scores";
-        btn.setAttribute('style', "padding:15px")          // Insert text
+        btn.setAttribute('style', globalPadding)          // Insert text
         btn.setAttribute('onclick', "showHighScoreValues()")
         mainEl.appendChild(btn);
 
