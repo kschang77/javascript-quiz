@@ -3,17 +3,17 @@
 //  init and greet   /done
 //     show startQuiz button that call initAndGreet /done
 
-//  upon "view highscores" button press
-//  !! do showScores
+//  upon "view highscores" button press / done
+//  !! do showScores /done
 //  display score table     / done
-//     + "return to main" + erase high score
+//     + "return to main" + erase high score /done
 
-//  return to main goes back to init and greet
+//  return to main goes back to init and greet /done
 
-//  erase high score erases local storage 
-//  goto do showScores again
+//  erase high score erases local storage  /done
+//  goto do showScores again /done
 
-//  upon "start quiz" button press
+//  upon "start quiz" button press /done
 //  loop until timer <=0 or end of questions
 //    init timer and start timer countdown
 //    display question
@@ -30,10 +30,12 @@
 //  do showScore (see !!)
 
 // utility function, implements sleep
-const sleep = (milliseconds) => {
-    return new Promise(resolve => setTimeout(resolve, milliseconds))
-}
+// const sleep = (milliseconds) => {
+//     return new Promise(resolve => setTimeout(resolve, milliseconds))
+// }
 
+
+var myTimer; // global timer variable
 
 arrTrivia = [
     { question:"In the episode 'The Man Trap' what did the creature crave?",
@@ -187,13 +189,13 @@ function showformAddHighScore(score) {
  
     var txtScore = document.createElement("p");
     txtScore.innerHTML = "Your score is "+score;
-    txtStart.setAttribute('style', "padding:15px")
-    txtStart.setAttribute('style', "margin:20%")
+    txtScore.setAttribute('style', "padding:15px")
+    txtScore.setAttribute('style', "margin:20%")
     mainEl.appendChild(txtScore);
 
+    var txtStart = document.createElement("p");
     txtStart.innerHTML = "Great job! Enter your initials (max of 3 characters) to save your score ";
     txtStart.innerHTML += "or leave blank to continue without saving."
-    var txtStart = document.createElement("p");
     txtStart.setAttribute('style', "padding:15px")
     txtStart.setAttribute('style', "margin:20%")
     mainEl.appendChild(txtStart);
@@ -214,13 +216,13 @@ function doMainQuizLoop () {
     bQuizEnded = false;
     // initialize timer
 
-    var timerInterval = setInterval(function () {
+    myTimer = setInterval(function () {
         timeEl.textContent = "Time: " + (secondsLeft - 1);
         secondsLeft--;
 
         if (secondsLeft === 0) {
             // stop timer
-            clearInterval(timerInterval);
+            clearInterval(myTimer);
             endQuiz(0);
         }
     }, 1000);
@@ -229,7 +231,7 @@ function doMainQuizLoop () {
     var btn = document.createElement("BUTTON");   // Create a <button> element
     btn.innerHTML = "Win Now";
     btn.setAttribute('style', "padding:15px")          // Insert text
-    btn.setAttribute('onclick', "endQuiz(10)")
+    btn.setAttribute('onclick', "endQuiz()")
     mainEl.appendChild(btn);
 
     var i = 0;
@@ -270,17 +272,16 @@ function startQuiz() {
 }
 
 
-function endQuiz(score) {
+function endQuiz() {
+    //Stop the clock
+    clearInterval(myTimer);
     // erase the "view highscore link" and the timer
     timeEl.textContent = "";
     highScoreEl.textContent = "";
     // erase Main
     mainEl.innerHTML = "";
-   // clearInterval(timerInterval);
 
-    
-
-    showformAddHighScore();
+    showformAddHighScore(secondsLeft);
 }
 
 function initAndGreet() {
