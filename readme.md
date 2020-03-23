@@ -48,6 +48,13 @@ No installation required
 [One of the Questions](./Assets/QuizCap02.png)
 
 
+## Potential enhancements
+
+* Random order of questions
+* Random order of answers
+* Sort High Score Table
+* Other cosmetic touches
+
 
 # Deployed Link
 

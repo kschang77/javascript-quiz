@@ -129,7 +129,7 @@ function retrieveHighScores() {
 function showHighScoreValues () {
     //display high score table
     clearMain();
-    mainEl.innerHTML = "<h3>High score table</h3>"
+    mainEl.innerHTML = "<h3>High Score Table</h3>"
     retrieveHighScores();
     // console.log(arrHighScores);
     
@@ -352,6 +352,9 @@ function initAndGreet() {
     var txtTitle = document.createElement("h1");
         txtTitle.innerHTML = "'Trekker Knows' Challenge";
         mainEl.appendChild(txtTitle);
+
+        // reinit the timer max time
+        secondsLeft = playTime;
 
     var txtStart = document.createElement("p");
         txtStart.innerHTML = "Answer "+arrTrivia.length+" questions about Star Trek (the Original Series) ";
