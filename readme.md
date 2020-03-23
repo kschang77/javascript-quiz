@@ -1,7 +1,8 @@
 # Javascript Quiz
 
-Project "Javascript Quiz" is a quick 60 second quiz of up to 10 Javascript questions
-that is made through Javascript DOM manipulation. 
+Project "Javascript Quiz" is a quick quiz of up to several questions
+that is made through Javascript DOM manipulation. Site is responsive
+and will react to different screen widths (within limits). 
 
 ## Project Repo
 
@@ -19,9 +20,39 @@ No installation required
 
 [Javascript](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
 
+## Code Snippet
+
+        // read back the arrHighScores from local storage
+        function retrieveHighScores() {
+            var rawData = localStorage.highScores;
+            // console.log(rawData);
+            if (rawData != null) {
+                var highScoresStored = JSON.parse(rawData);
+                // console.log(highScoresStored)
+                arrHighScores = [];
+                for (var i = 0, len = highScoresStored.length; i< len ; i++) {
+                    var highScoreSingle = new Object();
+                    highScoreSingle.name = highScoresStored[i].name;
+                    highScoreSingle.seconds = highScoresStored[i].seconds;
+                    arrHighScores.push(highScoreSingle);
+        //            console.log(highScoreSingle)
+                } 
+            }
+            // console.log(arrHighScores)
+        }
+
+## Screenshots
+
+[Title Screen and Start](./Assets/QuizCap01.png)
+
+[One of the Questions](./Assets/QuizCap02.png)
+
+
+
 # Deployed Link
 
 https://kschang77.github.io/javascript-quiz
+
 
 ## Author
 

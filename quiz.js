@@ -68,10 +68,11 @@ arrTrivia = [
 //
 var timeEl = document.querySelector(".txtTime");
 var mainEl = document.getElementById("main");
-var highScoreEl = document.querySelector(".txtViewHighScore")
+// var highScoreEl = document.querySelector(".txtViewHighScore")
 
     // initialize the display with seconds remaining
-var secondsLeft = 100;
+var playTime = 50
+var secondsLeft = playTime;
 var secondsPenalty = 5;
 var curTriviaQuestion = 0;
 var globalPadding = "padding: 15px"
@@ -248,9 +249,6 @@ function displayQuestion () {
 function checkAnswer (myAnswer) {
     var correctAnswer = arrTrivia[curTriviaQuestion].answer;
     var txtResult = document.createElement("h3")
-
-    txtResult.setAttribute('style', globalPadding)
-    txtResult.setAttribute('style', globalMargin)
     if (myAnswer!=correctAnswer) {
         // flash error message
         txtResult.innerHTML = "Wrong!";
@@ -263,14 +261,17 @@ function checkAnswer (myAnswer) {
     }
     console.log(txtResult)
     // clearMain();
+
+    txtResult.setAttribute('style', globalPadding)
+    txtResult.setAttribute('style', globalMargin)
     mainEl.appendChild(txtResult);
     // alert ("pause")
     // sleep 1 second
-    sleep(1000);
+    // sleep(30000);
     console.log("curTriviaQuestion = "+curTriviaQuestion)
     if (curTriviaQuestion<arrTrivia.length-1) {
         curTriviaQuestion++;
-        displayQuestion();
+        setTimeout (displayQuestion(),1000);
     } else {
         endQuiz();
     }
@@ -318,10 +319,10 @@ function startQuiz() {
 
     // reset pointers and time to proper values
     curTriviaQuestion = 0;
-    secondsLeft = 100;
+    secondsLeft = playTime;
 
     // display the "View Highscores link"
-    highScoreEl.textContent = "View Highscores" + highScoreEl.textContent;
+//    highScoreEl.textContent = "View Highscores" + highScoreEl.textContent;
     
     // initialize timer display
     timeEl.textContent = "Time: "+secondsLeft;
@@ -336,7 +337,7 @@ function endQuiz() {
     clearInterval(myTimer);
     // erase the "view highscore link" and the timer
     timeEl.textContent = "";
-    highScoreEl.textContent = "";
+    // highScoreEl.textContent = "";
     // erase Main
     mainEl.innerHTML = "";
     // reset question pointer to 0
