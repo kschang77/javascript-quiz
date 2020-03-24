@@ -2,7 +2,9 @@
 
 Project "Javascript Quiz" is a quick quiz of up to several questions
 that is made through Javascript DOM manipulation. Site is responsive
-and will react to different screen widths (within limits). 
+and will react to different screen widths (within limits). Site will
+also save high scores into localstorage and retrieve them as needed,
+with optional reset. 
 
 ## Project Repo
 
